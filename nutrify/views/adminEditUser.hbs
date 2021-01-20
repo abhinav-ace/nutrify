@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome!</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/4bab9f3197.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="flex1">
+                <a href='/'><h1>Nutrify.me!</h1></a> 
+            </div> 
+            <div class="flex2">
+                <a href = '/adminDashboard'>Dashboard</a>
+                <a href = '/adminAddmeal'>Addmeal</a>
+                <a href = '/adminProfile'>Profile</a>
+                <a href = '/adminListUser'>List Users</a>
+                <a href = '/adminEditUser'>Edit Users</a>
+                <a href = '/logout'>Logout</a>
+            </div>
+        </div>
+
+
+        <div class="admin-edit-user">
+            <h2 style="color:orange">Enter Username :</h2>
+            <input id='fetch-username' type="text" class='user-input'>
+            <button id='fetch-user-btn' class='user-fetch-btn' onclick="fetchUser()">Fetch</button>
+        </div>
+
+        <div id="error-message" style="color:orange; text-align:center;">
+
+        </div>
+
+        <form id="details-container" method="post" action="/api/adminUser/editUser" autocomplete="off"> 
+            <div class="editUserForm" id="editUserForm">
+                <h3 style="color:orange; text-align:center">User Details</h3>
+                <label for="username">Username :</label>
+                <input id="username" type="text" name="username" class="inputelements" required><br><br>
+                <label for="email">Email id :</label>
+                <input id="email" type="text" name="email" class="inputelements" required><br><br>
+                <label for="admin">Admin :</label>
+                <input id="admin" type="text" name="admin" class="inputelements" required><br><br>
+                <label for="calorie">Calories :</label>
+                <input id="calorie" type="text" name="calorie" class="inputelements" required><br><br>
+                <input type="submit" value="Save" class="btn">
+            </div>
+        </form>
+
+        <div id="dishes-container" >
+            
+        </div>
+
+    <script>
+
+        function fetchUser(){
+            let username = document.getElementById("fetch-username").value;
+            fetch("http://localhost:3000/api/adminUser/getUser",{
+                    method : 'GET',
+                    headers : {
+                        'Content-Type' : 'application/json',
+                        'body' : `${username}`
+                    }
+            }).then((res)=>{
+                return res.json();
+            }).then((user)=>{
+
+                let userMeal=user.meals;
+
+                document.getElementById("editUserForm").style.display="block";
+                document.getElementById("username").value=user.username;
+                document.getElementById("email").value=user.email;
+                document.getElementById("admin").value=user.isAdmin;
+                document.getElementById("calorie").value=user.calorie;
+                
+                userMeal.sort((meal1,meal2)=>{
+                    return new Date(meal2.mealDate) - new Date(meal1.mealDate);
+                });
+
+                document.getElementById("dishes-container").innerHTML="";
+                document.getElementById("error-message").textContent="";
+
+                for (var i = 0; i < userMeal.length; i++) {
+
+                    let divMain = document.createElement("div");
+                    divMain.classList.add("dish-flex");
+                    
+                    let div1 = document.createElement("div");
+                    let div1txt = document.createTextNode(userMeal[i].mealType);
+                    div1.append(div1txt);
+                    div1.classList.add("capitalize");
+
+                    let div2 = document.createElement("div");
+                    let div2txt = document.createTextNode(userMeal[i].mealDescription);
+                    div2.append(div2txt);
+                    div2.classList.add("capitalize");
+
+                    let div3 = document.createElement("div");
+                    let div3txt = document.createTextNode(userMeal[i].mealCalories);
+                    div3.append(div3txt);
+
+                    let div4 = document.createElement("div");
+                    let div4txt = document.createTextNode(userMeal[i].mealDate);
+                    div4.append(div4txt);
+
+                    divMain.append(div1);
+                    divMain.append(div2);
+                    divMain.append(div3);
+                    divMain.append(div4);
+
+                    document.getElementById("dishes-container").append(divMain);
+                }
+            }).catch((err)=>{
+
+                document.getElementById("error-message").textContent="User Doesn't Exist";                
+                document.getElementById("dishes-container").innerHTML="";
+                document.getElementById("editUserForm").style.display="none";
+            })
+        }
+    </script>
+    </body>
+</html>

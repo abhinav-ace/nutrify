@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sign In</title>
+        <a href='/' style="color:white;"><h1 class="header-name-sign">Nutrify.me!</h1></a>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <form method="post" action="/api/auth/signin" autocomplete="off">
+            <div id="signupform">
+                <h2 style="font-size: 40px; color:orange;">Fill in your details</h2>
+                <label for="username">Username : </label>
+                <input type="text" placeholder="Enter Username" name="username" class="inputelements" required><br><br>
+                <label for="password">Enter Password : </label>
+                <input type="password" placeholder="Password" name="password" class="inputelements" required><br><br>
+                <input type="submit" value="Sign In" class="btn">
+            </div>
+        </form>
+        <div>
+            <h1 style="text-align: center; color:orange;">{{{msg}}}</h1>
+        </div>
+    </body>
+</html>

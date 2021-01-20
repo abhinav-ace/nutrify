@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome!</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/4bab9f3197.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="flex1">
+                <a href='/'><h1>Nutrify.me!</h1></a> 
+            </div> 
+            <div class="flex2">
+                <a href = '/adminDashboard'>Dashboard</a>
+                <a href = '/adminAddmeal'>Addmeal</a>
+                <a href = '/adminProfile'>Profile</a>
+                <a href = '/adminListUser'>List Users</a>
+                <a href = '/adminEditUser'>Edit Users</a>
+                <a href = '/logout'>Logout</a>
+            </div>
+        </div>
+        <form method="post" action="/api/show/getToday" autocomplete="off"> 
+            <div class="addmealform">
+                <h2 style="color:orange;">Meal's On</h2>
+                <input type="date" id="mealDate" name="mealDate"  required>
+                <input type="submit" value="Fetch" style="height:25px; width:80px; background-color:white">
+            </div>
+        </form>
+        <div id="totalCalorie">
+            <h1 style="color:orange" id="calorieIntake">Calorie Intake :</h1>
+            <h1 id="maxCalorieReached" style="color:red"></h1>
+            <progress  max="100" value="0" id="progressBar"></progress>
+        </div>
+        <div id="dishes-container">
+
+        </div>
+
+        <div class="form-popup" id="myForm">
+            <div class="form-container">
+                <h3 style="font-size: 30px; color:orange;">Edit Meal</h2>
+                <label for="MealType">Meal Type :</label>
+                <input id="editType" type="text" placeholder="Enter Meal Type" name="mealType" class="inputelements" required><br>
+                <label for="Description">Description :</label>
+                <input id="editDescription" type="text" placeholder="Enter Meal Description" name="mealDescription" class="inputelements" required><br>
+                <label for="Calories">Calories :</label>
+                <input id="editCalorie" type="text" value=0 name="mealCalories" required>
+                <button class="btn" onclick="closeForm()">Save</button>
+            </div>
+        </div>
+
+    <script>
+        var daysMeals = {{{meals}}};
+        var mealDate = {{{mealDate}}};
+        var calorie = {{{totalCalorie}}};
+        document.getElementById("mealDate").value = mealDate;
+        let totalCalorie = 0;
+        for (var i = 0; i < daysMeals.length; i++){
+            if(daysMeals[i].mealDate == mealDate){
+
+                let divMain = document.createElement("div");
+                divMain.classList.add("dish-flex");
+
+                let div1 = document.createElement("div");
+                let div1txt = document.createTextNode(daysMeals[i].mealType);
+                div1.append(div1txt);
+                div1.classList.add("capitalize");
+
+                let div2 = document.createElement("div");
+                let div2txt = document.createTextNode(daysMeals[i].mealDescription);
+                div2.append(div2txt);
+                div2.classList.add("capitalize");
+
+                let div3 = document.createElement("div");
+                let div3txt = document.createTextNode(daysMeals[i].mealCalories);
+                div3.append(div3txt);
+                totalCalorie += parseFloat(daysMeals[i].mealCalories);
+
+                let div4 = document.createElement("div");
+
+                let icon1 = document.createElement("i");
+                icon1.classList.add("far");
+                icon1.classList.add("fa-edit");
+                icon1.classList.add("fa-lg");
+
+                icon1.setAttribute("id",i);
+                icon1.setAttribute("onclick","openForm()");
+
+                let icon2 = document.createElement("i");
+                icon2.classList.add("far");
+                icon2.classList.add("fa-trash-alt");
+                icon2.classList.add("fa-lg");
+
+                icon2.setAttribute("id",i);
+                icon2.setAttribute("onclick","deleteMealFunc()");
+
+                div4.append(icon1); 
+                div4.append(icon2); 
+
+                divMain.append(div1);
+                divMain.append(div2);
+                divMain.append(div3);
+                divMain.append(div4);
+                document.getElementById("dishes-container").append(divMain);
+            }
+        }
+
+        totalCalorie = Math.ceil(totalCalorie*100)/100;
+
+        let div1 = document.createElement("div");
+        let div1txt = document.createTextNode(totalCalorie);
+        let div2txt = document.createTextNode(calorie);
+        let div3txt = document.createTextNode("/");
+
+        div1.append(div1txt);
+        div1.append(div3txt);
+        div1.append(div2txt);
+
+        if ((Math.ceil((totalCalorie/calorie*100)*100)/100)>100){
+            document.getElementById("maxCalorieReached").textContent = "MAX LIMIT REACHED";
+        }
+        else{
+            document.getElementById("maxCalorieReached").textContent = "";
+        }
+
+        document.getElementById("calorieIntake").append(div1);
+        document.getElementById("progressBar").value = Math.ceil((totalCalorie/calorie*100)*100)/100;
+
+        function deleteMealFunc(){
+
+            let id = event.target.id;
+            let n = daysMeals.length;
+
+            if(id<n){
+                let finalMeals = [];
+
+                for(let i=0; i<n;i++){
+                    if (String(i) == id){
+                    }
+                    else{
+                        finalMeals.push(daysMeals[i]);
+                    }
+                }
+
+                fetch("http://localhost:3000/api/meal/deleteMeal",{
+                    method : 'POST',
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(finalMeals)
+                })
+                location.reload();
+            }
+        } 
+
+        let date=document.getElementById("mealDate").value;
+        let editId;
+
+        function openForm(){
+
+            document.getElementById("myForm").style.display = "block";
+            editId = event.target.id;
+            document.getElementById("editType").value=document.getElementById(editId).parentElement.parentElement.children[0].textContent;
+            document.getElementById("editDescription").value=document.getElementById(editId).parentElement.parentElement.children[1].textContent;
+            document.getElementById("editCalorie").value=document.getElementById(editId).parentElement.parentElement.children[2].textContent;
+        } 
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+            let newType=document.getElementById("editType").value;
+            let newDescription=document.getElementById("editDescription").value;
+            let newCalorie=document.getElementById("editCalorie").value;
+
+            document.getElementById(editId).parentElement.parentElement.children[0].textContent=newType;
+            document.getElementById(editId).parentElement.parentElement.children[1].textContent=newDescription;
+            document.getElementById(editId).parentElement.parentElement.children[2].textContent=newCalorie;
+            newMeal={mealDate: date, mealType: newType, mealDescription: newDescription, mealCalories: newCalorie}
+
+            let finalMeals = [];
+            let n = daysMeals.length;
+
+            for(let i=0; i<n;i++){
+                if (String(i) == editId){
+                    finalMeals.push(newMeal)
+                }
+                else{
+                    finalMeals.push(daysMeals[i]);
+                }
+            }
+
+            fetch("http://localhost:3000/api/meal/editMeal",{
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify(finalMeals)
+            })
+            location.reload();
+        }
+    </script>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Add Meal</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="flex1">
+                <a href='/'><h1>Nutrify.me!</h1></a> 
+            </div> 
+            <div class="flex2">
+                <a href = '/dashboard'>Dashboard</a>
+                <a href = '/addmeal'>Addmeal</a>
+                <a href = '/profile'>Profile</a>
+                <a href = '/logout'>Logout</a>
+            </div>
+        </div>
+        <form method="post" action="/api/meal/addMeal" autocomplete="off"> 
+            <div class="addmealform">
+                <h2 style="font-size: 40px; color:orange;">Add Meal</h2>
+                <label for="MealDate">Date :</label>
+                <input id="date" type="date" name="mealDate" class="inputelements" required><br><br>
+                <label for="MealType">Meal Type :</label>
+                <input id="type" type="text" placeholder="Enter Meal Type" name="mealType" class="inputelements" required><br><br>
+                <label for="Description">Description :</label>
+                <input id="foodItem" type="text" placeholder="Enter Meal Description" name="mealDescription" class="inputelements" required><br><br>
+                <label for="Calories">Calories :</label>
+                <input id="calories" type="text" value=0 name="mealCalories" required>
+                <input id="getCalorieButton" type="button" value="Get calories from Neutrionix.com" onclick="getCalorie()" style="background-color:white; border:1px solid black"><br><br>
+                <input type="submit" value="Add" class="btn">
+            </div>
+        </form>
+        <script>
+            function getCalorie(){
+                let foodItem = document.getElementById("foodItem").value;
+                
+                fetch("http://localhost:3000/api/fetch/fetchCalorie",{
+                    method : 'GET',
+                    headers : {
+                        'Content-Type' : 'application/json',
+                        'body' : foodItem,
+                    }
+                }).then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("calories").value=data;
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                })
+            };            
+        </script>
+        
+    </body>
+</html>

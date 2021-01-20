@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Profile</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="flex1">
+                <a href='/'><h1>Nutrify.me!</h1></a> 
+            </div> 
+            <div class="flex2">
+                <a href = '/adminDashboard'>Dashboard</a>
+                <a href = '/adminAddmeal'>Addmeal</a>
+                <a href = '/adminProfile'>Profile</a>
+                <a href = '/adminListUser'>List Users</a>
+                <a href = '/adminEditUser'>Edit Users</a>
+                <a href = '/logout'>Logout</a>
+            </div>
+        </div>
+        <form method="post" action="/api/update/updateProfile" autocomplete="off"> 
+            <div class="addmealform">
+                <h2 style="font-size: 40px; color:orange;">Your Profile</h2>
+                <label for="Calorie">Calories :</label>
+                <input id="calorie" type = "text" value = 0 name = "calorie" class = "inputelements" required><br><br>
+                <input type="submit" value = "Update" class = "btn">
+            </div>
+        </form>
+        <script>
+            let calorie={{{calorieLimit}}};
+            document.getElementById("calorie").value = calorie;
+        </script>
+    </body>
+</html>

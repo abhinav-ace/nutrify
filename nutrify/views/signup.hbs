@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sign Up</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+        <a href='/' style="color:white;"><h1 class="header-name-sign">Nutrify.me!</h1></a>
+    </head>
+    <body>
+        <form  method="post" action="/api/auth/signup" autocomplete="off">
+            <div id="signupform">
+                <h2 style="font-size: 40px; color:orange;">Register</h2>
+                <label for="username">Username :</label>
+                <input type="text" placeholder="Enter Username" name="username" class="inputelements" required><br><br>
+                <label for="email">Email :</label>
+                <input type="text" placeholder="Enter Email" name="email" class="inputelements" required><br><br>
+                <label for="password">Password :</label>
+                <input type="password" placeholder="Enter Password" name="password" class="inputelements" required><br><br>
+                <label for="confirmPassword">Confirm Password :</label>
+                <input type="password" placeholder="Enter Password" name="confirmPassword" class="inputelements" required><br><br>
+                <label for="calorie">Calorie Limit :</label>
+                <input type="number" placeholder="Enter Calortie Limit" name="calorie" class="inputelements"><br><br>
+                <input type="submit" value="Create Account" class="btn">
+            </div>
+        </form>
+        <div style="text-align: center; color:orange">
+            <h1>{{msg}}</h1>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome!</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/4bab9f3197.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="flex1">
+                <a href='/'><h1>Nutrify.me!</h1></a> 
+            </div> 
+            <div class="flex2">
+                <a href = '/adminDashboard'>Dashboard</a>
+                <a href = '/adminAddmeal'>Addmeal</a>
+                <a href = '/adminProfile'>Profile</a>
+                <a href = '/adminListUser'>List Users</a>
+                <a href = '/adminEditUser'>Edit Users</a>
+                <a href = '/logout'>Logout</a>
+            </div>
+        </div>
+
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Calorie</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+
+            </tbody>
+        </table>
+
+    <script>
+        let users={{{users}}}
+        let count=0;
+        for (user of users){
+            count+=1
+            let tr1=document.createElement('tr');
+            let td1=document.createElement('td');
+            let td1txt=document.createTextNode(count);
+            td1.append(td1txt)
+            let td2=document.createElement('td');
+            let td2txt=document.createTextNode(user.username);
+            td2.append(td2txt)
+            let td3=document.createElement('td');
+            let td3txt=document.createTextNode(user.email);
+            td3.append(td3txt)
+            let td4=document.createElement('td');
+            let td4txt=document.createTextNode(user.isAdmin);
+            td4.append(td4txt)
+            let td5=document.createElement('td');
+            let td5txt=document.createTextNode(user.calorie);
+            td5.append(td5txt)
+            let td6=document.createElement('td');
+
+            let icon1 = document.createElement("i");
+            icon1.classList.add("far");
+            icon1.classList.add("fa-trash-alt");
+            icon1.classList.add("fa-lg");
+
+            icon1.setAttribute("id",count);
+            icon1.setAttribute("onclick","deleteUser()");
+
+            td6.append(icon1);
+
+            tr1.append(td1);
+            tr1.append(td2);
+            tr1.append(td3);
+            tr1.append(td4);
+            tr1.append(td5);
+            tr1.append(td6);
+
+            document.getElementById("userTableBody").append(tr1);
+        }
+
+        function deleteUser(){
+
+            let id = event.target.id;
+            let deleteUser=[document.getElementById(id).parentElement.parentElement.children[1].textContent];
+            let confirmDeletion = confirm(`Are you sure you want to delete User : ${id}`);
+            if (confirmDeletion==true){
+                fetch("http://localhost:3000/api/adminUser/deleteUser",{
+                    method : 'POST',
+                    headers : {
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify(deleteUser)
+                })
+                console.log(document.getElementById(id).parentElement.parentElement)
+                document.getElementById(id).parentElement.parentElement.style.display='none';
+            }
+        }
+    </script>
+    </body>
+</html>
